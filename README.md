@@ -1,11 +1,9 @@
 # SecuritySystem
-A brief description of your project's purpose and functionality.
-
+Develops a simple, homemade security system that utilizes a ToF sensor to detect motion, and a camera to capture instance. 
 ## Getting Started
 
-These instructions will help users set up and run your project on their local machines. Include any prerequisites, dependencies, and system requirements.
-
+Ensure to run the make file prior to using "run" command i.e (./main)
 ### Prerequisites
 
-List any software, libraries, or tools that need to be installed before using your project.
+on raspberrry pi: libfuse2 (for c/c++), libcamera, as well as visual studio packages (optional)
 
