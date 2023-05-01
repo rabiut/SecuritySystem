@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "VL53L1X_api.h"
-
+#include <stdlib.h>
 #include <stdint.h>
+
+const char *image_folder = "/home/pi/PiCam";
+
 
 #define LOW 0
 #define HIGH 1
@@ -57,9 +60,19 @@ int main() {
         rslt = set_value(LOW, num);
 
         while(Results.Distance<=100){
-            rslt = set_value(HIGH, num);//Turn on LED for 5s
-            VL53L1X_GetResult(dev, &Results);//yes
-            sleep(5);
+            rslt = set_value(HIGH, num);//Turn on LED
+            if (Results.Distance <= 100) {
+                printf("Motion Detected!\n");
+                // Generate the command for capturing the image
+                char command[256];
+                //snprintf(command, sizeof(command), "libcamera-still -o %s/test.jpg", image_folder);
+                snprintf(command, sizeof(command), "libcamera-still --width 640 --height 480 --shutter 10000 --quality 50 -o %s/test.jpg", image_folder);
+
+                // Execute the command to take a picture and store it in the folder
+                system(command);
+            }
+            VL53L1X_GetResult(dev, &Results);
+            sleep(3);
         }
         rslt = set_value(LOW, num);
 
