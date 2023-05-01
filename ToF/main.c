@@ -74,7 +74,7 @@ int main() {
             VL53L1X_GetResult(dev, &Results);
             sleep(3);
         }
-        rslt = set_value(LOW, num);
+        rslt = set_value(LOW, num);//
 
 
         usleep(100000); // Wait for 25 ms
