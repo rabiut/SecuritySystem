@@ -61,18 +61,28 @@ int main() {
 
         while(Results.Distance<=100){
             rslt = set_value(HIGH, num);//Turn on LED
-            if (Results.Distance <= 100) {
+            // if (Results.Distance <= 100) {
+            //     printf("Motion Detected!\n");
+            //     // Generate the command for capturing the image
+            //     char command[256];
+            //     //snprintf(command, sizeof(command), "libcamera-still -o %s/test.jpg", image_folder);
+            //     snprintf(command, sizeof(command), "libcamera-still --width 640 --height 480 --shutter 10000 --quality 50 -o %s/test.jpg", image_folder);
+
+            //     // Execute the command to take a picture and store it in the folder
+            //     system(command);
+            // }
+             if (Results.Distance <= 100) {
                 printf("Motion Detected!\n");
                 // Generate the command for capturing the image
                 char command[256];
-                //snprintf(command, sizeof(command), "libcamera-still -o %s/test.jpg", image_folder);
-                snprintf(command, sizeof(command), "libcamera-still --width 640 --height 480 --shutter 10000 --quality 50 -o %s/test.jpg", image_folder);
+                // Use 'fswebcam' instead of 'libcamera-still' to capture the image with the USB camera
+                snprintf(command, sizeof(command), "fswebcam --no-banner --resolution 640x480 --jpeg 50 -S 5 -r 640x480 %s/test.jpg", image_folder);
 
                 // Execute the command to take a picture and store it in the folder
                 system(command);
             }
             VL53L1X_GetResult(dev, &Results);
-            sleep(3);
+            sleep(2);
         }
         rslt = set_value(LOW, num);//
 
