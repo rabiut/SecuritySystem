@@ -3,8 +3,19 @@
 #include "VL53L1X_api.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include "capture_image.h"
+
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include "motion_sensor.h"
+
 
 const char *image_folder = "/home/pi/PiCam";
+const char *image_path = "/home/pi/PiCam/test.jpg";
+const char *info_text = "Motion detected";
+const char *url = "http://192.168.2.20:5000/motion-sensor";
 int start=0;
 
 #define LOW 0
@@ -16,12 +27,19 @@ int main() {
     int adapter_nr = 1;
     uint8_t I2cDevAddr = 0x29;
     VL53L1X_Result_t Results;
-   // Results.Distance = 10000000;
-
-    /*GPIO Controls*/
-    int rslt;
-    int num;
     int count = -1;
+
+    
+    // Create the folder if it doesn't exist
+    if (mkdir(image_folder, 0755) == -1) {
+        if (errno != EEXIST) {
+            perror("Error creating image folder");
+        return 1;
+        }
+    }
+
+    
+    //code starts here
 
     if (0 == (status = VL53L1X_UltraLite_Linux_I2C_Init(dev, adapter_nr, I2cDevAddr))) {
         printf("Sensor successfully initialized!\n");
@@ -47,57 +65,15 @@ int main() {
             printf("Measured distance: %d mm\n", Results.Distance);
             VL53L1X_ClearInterrupt(dev);
         }
-
-        
-
-
-        /******GPIO CONTROL*/
-        // rslt;
-        // num;
-
-        // num=13;
-        // rslt = export_pin(num);
-        // sleep(1);
-        // rslt = set_direction("out", num);
-        // rslt = set_value(LOW, num);
-        int extxp = 0;//take one picture during exteded exposure
+        int extxp = 0;//take one picture during extended exposure
         while(Results.Distance<=100){
-            //rslt = set_value(HIGH, num);//Turn on LED
-            // if (Results.Distance <= 100) {
-            //     printf("Motion Detected!\n");
-            //     // Generate the command for capturing the image
-            //     char command[256];
-            //     //snprintf(command, sizeof(command), "libcamera-still -o %s/test.jpg", image_folder);
-            //     snprintf(command, sizeof(command), "libcamera-still --width 640 --height 480 --shutter 10000 --quality 50 -o %s/test.jpg", image_folder);
-
-            //     // Execute the command to take a picture and store it in the folder
-            //     system(command);
-            // }
-            
-             if (Results.Distance <= 100 && count>=0 && extxp == 0) {
-                extxp++;
-                printf("Motion Detected!\n");
-                // Generate the command for capturing the image
-                char command[256];
-                // Use 'fswebcam' instead of 'libcamera-still' to capture the image with the USB camera
-                snprintf(command, sizeof(command), "fswebcam --no-banner --resolution 640x480 --jpeg 50 -S 5 -r 640x480 %s/test.jpg", image_folder);
-
-                // Execute the command to take a picture and store it in the folder
-                system(command);
-            }
+            capture_image(Results, count, & extxp,  image_folder);
+            //send_motion_sensor_data(image_path, info_text, url);
             count++;
             VL53L1X_GetResult(dev, &Results);
             sleep(2);
         }
-        //rslt = set_value(LOW, num);//
-
-
         usleep(100000); // Wait for 25 ms
     }
-
-
-    //rslt = set_value(LOW, num);
-    //rslt = set_direction("in", num);
-    //rslt = unexport_pin(num);   
     return 0;
 }
