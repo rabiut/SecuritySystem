@@ -3,6 +3,7 @@
 #include "VL53L1X_api.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h> // Add this include to use the bool data type
 #include "capture_image.h"
 
 #include <errno.h>
@@ -28,6 +29,9 @@ int main() {
     uint8_t I2cDevAddr = 0x29;
     VL53L1X_Result_t Results;
     int count = -1;
+
+    bool data_sent; // Add this flag to track whether the data has been sent or not
+
 
     
     // Create the folder if it doesn't exist
@@ -65,14 +69,26 @@ int main() {
             printf("Measured distance: %d mm\n", Results.Distance);
             VL53L1X_ClearInterrupt(dev);
         }
-        int extxp = 0;//take one picture during extended exposure
-        while(Results.Distance<=100){
-            capture_image(Results, count, & extxp,  image_folder);
-            //send_motion_sensor_data(image_path, info_text, url);
-            count++;
+        bool extxp = false;//take one picture during extended exposure
+        while (Results.Distance<=100){
+            if (extxp == false){ 
+                capture_image(Results, image_folder);//camera
+                //send_motion_sensor_data(image_path, info_text, url);
+            }
+            else{//true
+                //printf("Extended Exposure...");
+                //do nothing
+            }
             VL53L1X_GetResult(dev, &Results);
+            if ((int) Results.Distance <= 100){ 
+                extxp = true;
+            }
+            else{
+                extxp = false;
+            }
             sleep(2);
         }
+
         usleep(100000); // Wait for 25 ms
     }
     return 0;

@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void capture_image(VL53L1X_Result_t Results, int count, int *extxp, const char *image_folder) {
-    if (Results.Distance <= 100 && count >= 0 && *extxp == 0) {
-        (*extxp)++;
+void capture_image(VL53L1X_Result_t Results, const char *image_folder) {
+    //if (Results.Distance <= 100) {
+
         printf("Motion Detected!\n");
 
         // Generate the command for capturing the image
@@ -14,7 +14,7 @@ void capture_image(VL53L1X_Result_t Results, int count, int *extxp, const char *
 
         // Execute the command to take a picture and store it in the folder
         system(command);
-    }
+    //}
 }
 
 

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "capture_image.h": "c"
+        "capture_image.h": "c",
+        "motion_sensor.h": "c"
     }
 }
