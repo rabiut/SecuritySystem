@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 const char *image_folder = "/home/pi/PiCam";
-
+int start=0;
 
 #define LOW 0
 #define HIGH 1
@@ -16,10 +16,12 @@ int main() {
     int adapter_nr = 1;
     uint8_t I2cDevAddr = 0x29;
     VL53L1X_Result_t Results;
+   // Results.Distance = 10000000;
 
     /*GPIO Controls*/
     int rslt;
     int num;
+    int count = -1;
 
     if (0 == (status = VL53L1X_UltraLite_Linux_I2C_Init(dev, adapter_nr, I2cDevAddr))) {
         printf("Sensor successfully initialized!\n");
@@ -39,7 +41,7 @@ int main() {
 
     while (1) {
         VL53L1X_CheckForDataReady(dev, &isDataReady);
-
+        //Results.Distance = 3000;
         if (isDataReady) {
             VL53L1X_GetResult(dev, &Results);
             printf("Measured distance: %d mm\n", Results.Distance);
@@ -50,17 +52,17 @@ int main() {
 
 
         /******GPIO CONTROL*/
-        rslt;
-        num;
+        // rslt;
+        // num;
 
-        num=13;
-        rslt = export_pin(num);
-        sleep(1);
-        rslt = set_direction("out", num);
-        rslt = set_value(LOW, num);
-
+        // num=13;
+        // rslt = export_pin(num);
+        // sleep(1);
+        // rslt = set_direction("out", num);
+        // rslt = set_value(LOW, num);
+        int extxp = 0;//take one picture during exteded exposure
         while(Results.Distance<=100){
-            rslt = set_value(HIGH, num);//Turn on LED
+            //rslt = set_value(HIGH, num);//Turn on LED
             // if (Results.Distance <= 100) {
             //     printf("Motion Detected!\n");
             //     // Generate the command for capturing the image
@@ -71,7 +73,9 @@ int main() {
             //     // Execute the command to take a picture and store it in the folder
             //     system(command);
             // }
-             if (Results.Distance <= 100) {
+            
+             if (Results.Distance <= 100 && count>=0 && extxp == 0) {
+                extxp++;
                 printf("Motion Detected!\n");
                 // Generate the command for capturing the image
                 char command[256];
@@ -81,18 +85,19 @@ int main() {
                 // Execute the command to take a picture and store it in the folder
                 system(command);
             }
+            count++;
             VL53L1X_GetResult(dev, &Results);
             sleep(2);
         }
-        rslt = set_value(LOW, num);//
+        //rslt = set_value(LOW, num);//
 
 
         usleep(100000); // Wait for 25 ms
     }
 
 
-    rslt = set_value(LOW, num);
-    rslt = set_direction("in", num);
-    rslt = unexport_pin(num);   
+    //rslt = set_value(LOW, num);
+    //rslt = set_direction("in", num);
+    //rslt = unexport_pin(num);   
     return 0;
 }
