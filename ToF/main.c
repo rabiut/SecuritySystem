@@ -14,7 +14,7 @@
 
 
 const char *image_folder = "/home/pi/PiCam";
-const char *image_path = "/home/pi/PiCam/test.jpg";
+const char *image_path = "/home/pi/PiCam/security_cam.jpg";
 const char *info_text = "Motion detected";
 const char *url = "http://192.168.2.20:5000/motion-sensor";
 int start=0;
@@ -32,6 +32,15 @@ int main() {
 
     bool data_sent; // Add this flag to track whether the data has been sent or not
 
+    int range_detect;
+    int range_mode = 2; //1 for short range   2 for long
+
+    if (range_mode == 1){
+        range_detect = 100;
+    }
+    else{
+        range_detect = 1000;
+    }
 
     
     // Create the folder if it doesn't exist
@@ -53,7 +62,7 @@ int main() {
     }
 
     VL53L1X_SensorInit(dev);
-    VL53L1X_SetDistanceMode(dev, 1); // 1 = short range, 2 = long range
+    VL53L1X_SetDistanceMode(dev, range_mode); // 1 = short range, 2 = long range
     VL53L1X_SetTimingBudgetInMs(dev, 20); // 20 ms is the minimum
     VL53L1X_SetInterMeasurementInMs(dev, 25); // 25 ms is the minimum
     VL53L1X_StartRanging(dev);
@@ -70,7 +79,7 @@ int main() {
             VL53L1X_ClearInterrupt(dev);
         }
         bool extxp = false;//take one picture during extended exposure
-        while (Results.Distance<=100){
+        while (Results.Distance<=range_detect){
             if (extxp == false){ 
                 capture_image(Results, image_folder);//camera
                 //send_motion_sensor_data(image_path, info_text, url);
@@ -80,7 +89,7 @@ int main() {
                 //do nothing
             }
             VL53L1X_GetResult(dev, &Results);
-            if ((int) Results.Distance <= 100){ 
+            if ((int) Results.Distance <= range_detect){ 
                 extxp = true;
             }
             else{

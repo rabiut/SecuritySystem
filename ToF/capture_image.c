@@ -10,7 +10,7 @@ void capture_image(VL53L1X_Result_t Results, const char *image_folder) {
         // Generate the command for capturing the image
         char command[256];
         // Use 'fswebcam' instead of 'libcamera-still' to capture the image with the USB camera
-        snprintf(command, sizeof(command), "fswebcam --no-banner --resolution 640x480 --jpeg 50 -S 5 -r 640x480 %s/test.jpg", image_folder);
+        snprintf(command, sizeof(command), "fswebcam --no-banner --resolution 640x480 --jpeg 50 -S 5 -r 640x480 %s/security_cam.jpg", image_folder);
 
         // Execute the command to take a picture and store it in the folder
         system(command);
