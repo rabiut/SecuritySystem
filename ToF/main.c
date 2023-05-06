@@ -33,7 +33,7 @@ int main() {
     bool data_sent; // Add this flag to track whether the data has been sent or not
 
     int range_detect;
-    int range_mode = 1; //1 for short range   2 for long
+    int range_mode = 2; //1 for short range   2 for long
 
     if (range_mode == 1){
         range_detect = 100;
@@ -75,9 +75,12 @@ int main() {
         //Results.Distance = 3000;
         if (isDataReady) {
             VL53L1X_GetResult(dev, &Results);
-            printf("Measured distance: %d mm\n", Results.Distance);
+            printf("MEASUREMENTS: %u, %u, %u, %u, %u\r\n", Results.Status, Results.Distance, Results.SigPerSPAD, Results.Ambient, Results.NumSPADs);
+            printf("Distance: %d mm\n", Results.Distance);
             VL53L1X_ClearInterrupt(dev);
         }
+        if(Results.Status!=0)
+            continue;
         bool extxp = false;//take one picture during extended exposure
         while (Results.Distance<=range_detect){
             if (extxp == false){ 
