@@ -81,7 +81,7 @@ int main() {
         bool extxp = false;//take one picture during extended exposure
         while (Results.Distance<=range_detect){
             if (extxp == false){ 
-                // capture_image(Results, image_folder);//camera
+                capture_image(Results, image_folder);//camera
                 //send_motion_sensor_data(image_path, info_text, url);
             }
             else{//true
