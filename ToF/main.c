@@ -33,7 +33,7 @@ int main() {
     bool data_sent; // Add this flag to track whether the data has been sent or not
 
     int range_detect;
-    int range_mode = 2; //1 for short range   2 for long
+    int range_mode = 1; //1 for short range   2 for long
 
     if (range_mode == 1){
         range_detect = 100;
@@ -81,7 +81,7 @@ int main() {
         bool extxp = false;//take one picture during extended exposure
         while (Results.Distance<=range_detect){
             if (extxp == false){ 
-                capture_image(Results, image_folder);//camera
+                // capture_image(Results, image_folder);//camera
                 //send_motion_sensor_data(image_path, info_text, url);
             }
             else{//true
