@@ -28,3 +28,4 @@ Camera Controls
                    pan_absolute 0x009a0908 (int)    : min=-201600 max=201600 step=3600 default=0 value=0
                   tilt_absolute 0x009a0909 (int)    : min=-201600 max=201600 step=3600 default=0 value=0
                   zoom_absolute 0x009a090d (int)    : min=0 max=10 step=1 default=0 value=0
+![image](https://github.com/rabiut/SecuritySystem/assets/90636484/f4475c60-2bb9-4cbd-b674-8c619fab6335)
