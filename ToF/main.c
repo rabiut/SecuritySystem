@@ -75,9 +75,15 @@ int main() {
         //Results.Distance = 3000;
         if (isDataReady) {
             VL53L1X_GetResult(dev, &Results);
-            printf("MEASUREMENTS: %u, %u, %u, %u, %u\r\n", Results.Status, Results.Distance, Results.SigPerSPAD, Results.Ambient, Results.NumSPADs);
-            printf("Distance: %d mm\n", Results.Distance);
-            VL53L1X_ClearInterrupt(dev);
+            if (Results.Status==0){
+                printf("MEASUREMENTS: %u, %u, %u, %u, %u\r\n", Results.Status, Results.Distance, Results.SigPerSPAD, Results.Ambient, Results.NumSPADs);
+                printf("Distance: %d mm\n", Results.Distance);
+                VL53L1X_ClearInterrupt(dev);
+            }
+            else{
+                VL53L1X_ClearInterrupt(dev);
+                continue;
+            }
         }
         if(Results.Status!=0)
             continue;
@@ -85,7 +91,7 @@ int main() {
         while (Results.Distance<=range_detect){
             if (extxp == false){ 
                 capture_image(Results, image_folder);//camera
-                //send_motion_sensor_data(image_path, info_text, url);
+                send_motion_sensor_data(image_path, info_text, url);
             }
             else{//true
                 //printf("Extended Exposure...");
